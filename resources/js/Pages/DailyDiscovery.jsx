@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
@@ -6,6 +6,15 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
     const canvasRef = useRef(null);
     const [activeTab, setActiveTab] = useState('apod');
     const [selectedImage, setSelectedImage] = useState(null);
+    const [showNoteModal, setShowNoteModal] = useState(false);
+
+    const { data, setData, post, processing, reset } = useForm({
+        nasa_image_url: '',
+        nasa_image_title: '',
+        nasa_explanation: '',
+        nasa_date: '',
+        user_note: '',
+    });
 
     // Animated star background
     useEffect(() => {
@@ -74,8 +83,33 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Create gallery from single APOD by duplicating with different dates
     const galleryItems = gallery && gallery.length > 0 ? gallery : [];
+
+    // Handle Add to Journal button click
+    const handleAddToJournal = (image) => {
+        setData({
+            nasa_image_url: image.url,
+            nasa_image_title: image.title,
+            nasa_explanation: image.explanation,
+            nasa_date: image.date,
+            user_note: '',
+        });
+        setShowNoteModal(true);
+    };
+
+    // Handle form submission
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('journey.store'), {
+            onSuccess: () => {
+                setShowNoteModal(false);
+                setSelectedImage(null);
+                reset();
+                alert('Added to your journey!');
+            },
+        });
+    };
+
     return (
         <>
             <Head title="Space Gallery" />
@@ -236,7 +270,7 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                 </div>
             </div>
 
-            {/* Modal */}
+            {/* Detail Modal */}
             <AnimatePresence>
                 {selectedImage && (
                     <motion.div
@@ -246,7 +280,6 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                         onClick={() => setSelectedImage(null)}
                         className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
                     >
-                        {/* Close Button - OUTSIDE the card */}
                         <button
                             onClick={() => setSelectedImage(null)}
                             className="fixed top-8 right-8 w-12 h-12 bg-slate-800/90 hover:bg-slate-700 rounded-full flex items-center justify-center text-white text-xl transition-colors z-[110] shadow-lg"
@@ -261,7 +294,6 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                             onClick={(e) => e.stopPropagation()}
                             className="bg-slate-900/95 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
                         >
-                            {/* Image */}
                             <div className="w-full aspect-video bg-black">
                                 <img
                                     src={selectedImage.hdurl || selectedImage.url}
@@ -274,7 +306,6 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                                 />
                             </div>
 
-                            {/* Content */}
                             <div className="p-8">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex-1">
@@ -295,7 +326,13 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                                         </div>
                                     </div>
                                     {auth.user && (
-                                        <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToJournal(selectedImage);
+                                            }}
+                                            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                                        >
                                             📖 Add to Journal
                                         </button>
                                     )}
@@ -311,6 +348,58 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                                     </p>
                                 )}
                             </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Note Modal */}
+            <AnimatePresence>
+                {showNoteModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[120] flex items-center justify-center p-4"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-slate-900/95 rounded-2xl max-w-md w-full p-8 border border-purple-500/30"
+                        >
+                            <h3 className="text-2xl font-bold text-white mb-4">Add Personal Note</h3>
+                            <p className="text-gray-400 mb-4">Add a personal note about this discovery (optional)</p>
+
+                            <form onSubmit={handleSubmit}>
+                                <textarea
+                                    value={data.user_note}
+                                    onChange={(e) => setData('user_note', e.target.value)}
+                                    placeholder="What do you think about this image?"
+                                    rows="4"
+                                    className="w-full px-4 py-3 bg-slate-800 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 mb-4"
+                                />
+
+                                <div className="flex gap-3">
+                                    <button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
+                                    >
+                                        {processing ? 'Saving...' : 'Save to Journal'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowNoteModal(false);
+                                            reset();
+                                        }}
+                                        className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold transition-all"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
                         </motion.div>
                     </motion.div>
                 )}

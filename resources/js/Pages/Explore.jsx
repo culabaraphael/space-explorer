@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
@@ -6,7 +6,16 @@ export default function Explore({ auth, apods }) {
     const canvasRef = useRef(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [activeFilter, setActiveFilter] = useState('All');
-    const [selectedApod, setSelectedApod] = useState(null); // For modal
+    const [selectedApod, setSelectedApod] = useState(null);
+    const [showNoteModal, setShowNoteModal] = useState(false);
+
+    const { data, setData, post, processing, reset } = useForm({
+        nasa_image_url: '',
+        nasa_image_title: '',
+        nasa_explanation: '',
+        nasa_date: '',
+        user_note: '',
+    });
 
     // Animated star background
     useEffect(() => {
@@ -100,6 +109,31 @@ export default function Explore({ auth, apods }) {
 
         return matchesSearch && matchesFilter;
     }) || [];
+
+    // Handle Add to Journal button click
+    const handleAddToJournal = (apod) => {
+        setData({
+            nasa_image_url: apod.url,
+            nasa_image_title: apod.title,
+            nasa_explanation: apod.explanation,
+            nasa_date: apod.date,
+            user_note: '',
+        });
+        setShowNoteModal(true);
+    };
+
+    // Handle form submission
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('journey.store'), {
+            onSuccess: () => {
+                setShowNoteModal(false);
+                setSelectedApod(null);
+                reset();
+                alert('Added to your journey!');
+            },
+        });
+    };
 
     return (
         <>
@@ -300,7 +334,7 @@ export default function Explore({ auth, apods }) {
                 </div>
             </div>
 
-            {/* Modal */}
+            {/* Detail Modal */}
             <AnimatePresence>
                 {selectedApod && (
                     <motion.div
@@ -308,8 +342,15 @@ export default function Explore({ auth, apods }) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setSelectedApod(null)}
-                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
                     >
+                        <button
+                            onClick={() => setSelectedApod(null)}
+                            className="fixed top-8 right-8 w-12 h-12 bg-slate-800/90 hover:bg-slate-700 rounded-full flex items-center justify-center text-white text-xl transition-colors z-[110] shadow-lg"
+                        >
+                            ✕
+                        </button>
+
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -317,15 +358,6 @@ export default function Explore({ auth, apods }) {
                             onClick={(e) => e.stopPropagation()}
                             className="bg-slate-900/95 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
                         >
-                            {/* Close Button */}
-                            <button
-                                onClick={() => setSelectedApod(null)}
-                                className="absolute top-4 right-4 w-10 h-10 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-white transition-colors z-10"
-                            >
-                                ✕
-                            </button>
-
-                            {/* Image */}
                             <div className="w-full aspect-video bg-black">
                                 <img
                                     src={selectedApod.hdurl || selectedApod.url}
@@ -334,7 +366,6 @@ export default function Explore({ auth, apods }) {
                                 />
                             </div>
 
-                            {/* Content */}
                             <div className="p-8">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex-1">
@@ -355,7 +386,13 @@ export default function Explore({ auth, apods }) {
                                         </div>
                                     </div>
                                     {auth.user && (
-                                        <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToJournal(selectedApod);
+                                            }}
+                                            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                                        >
                                             📖 Add to Journal
                                         </button>
                                     )}
@@ -371,6 +408,58 @@ export default function Explore({ auth, apods }) {
                                     </p>
                                 )}
                             </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Note Modal */}
+            <AnimatePresence>
+                {showNoteModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[120] flex items-center justify-center p-4"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-slate-900/95 rounded-2xl max-w-md w-full p-8 border border-purple-500/30"
+                        >
+                            <h3 className="text-2xl font-bold text-white mb-4">Add Personal Note</h3>
+                            <p className="text-gray-400 mb-4">Add a personal note about this discovery (optional)</p>
+
+                            <form onSubmit={handleSubmit}>
+                                <textarea
+                                    value={data.user_note}
+                                    onChange={(e) => setData('user_note', e.target.value)}
+                                    placeholder="What do you think about this image?"
+                                    rows="4"
+                                    className="w-full px-4 py-3 bg-slate-800 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 mb-4"
+                                />
+
+                                <div className="flex gap-3">
+                                    <button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
+                                    >
+                                        {processing ? 'Saving...' : 'Save to Journal'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowNoteModal(false);
+                                            reset();
+                                        }}
+                                        className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold transition-all"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
                         </motion.div>
                     </motion.div>
                 )}
