@@ -37,7 +37,7 @@ export default function Navbar({ auth }) {
                                     href="/my-journey"
                                     className="text-gray-300 hover:text-white transition-colors"
                                 >
-                                    My Journey
+                                    Journal
                                 </Link>
                                 <Link
                                     href="/logout"
@@ -106,7 +106,7 @@ export default function Navbar({ auth }) {
                                     href="/my-journey"
                                     className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md"
                                 >
-                                    My Journey
+                                    Journal
                                 </Link>
                                 <Link
                                     href="/logout"

@@ -1,10 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-export default function DailyDiscovery({ auth, apod }) {
+export default function DailyDiscovery({ auth, apod, gallery }) {
     const canvasRef = useRef(null);
     const [activeTab, setActiveTab] = useState('apod');
+    const [selectedImage, setSelectedImage] = useState(null);
 
     // Animated star background
     useEffect(() => {
@@ -73,16 +74,8 @@ export default function DailyDiscovery({ auth, apod }) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Mock data for gallery (using today's APOD as template)
-    const galleryItems = apod ? [
-        { ...apod, title: 'Pillars of Creation', date: '2024-11-28', description: 'The iconic Pillars of Creation captured by the Hubble Space Telescope, showing star-forming regions in the Eagle...' },
-        { ...apod, title: 'Andromeda Galaxy', date: '2024-11-27', description: 'Our nearest major galactic neighbor, the Andromeda Galaxy, located 2.5 million light-years away.' },
-        { ...apod, title: 'Carina Nebula', date: '2024-11-26', description: 'A stunning star-forming region captured by James Webb Space Telescope, revealing infant stars.' },
-        { ...apod, title: 'Jupiter\'s Great Red Spot', date: '2024-11-25', description: 'A massive storm on Jupiter that has been raging for hundreds of years.' },
-        { ...apod, title: 'Saturn\'s Rings', date: '2024-11-24', description: 'The magnificent ring system of Saturn captured in stunning detail.' },
-        { ...apod, title: 'Orion Nebula', date: '2024-11-23', description: 'One of the brightest nebulae visible to the naked eye, a stellar nursery.' },
-    ] : [];
-
+    // Create gallery from single APOD by duplicating with different dates
+    const galleryItems = gallery && gallery.length > 0 ? gallery : [];
     return (
         <>
             <Head title="Space Gallery" />
@@ -177,16 +170,6 @@ export default function DailyDiscovery({ auth, apod }) {
                         >
                             <span>✨</span> Astronomy Picture of the Day
                         </button>
-                        <button
-                            onClick={() => setActiveTab('mars')}
-                            className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
-                                activeTab === 'mars'
-                                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-purple-500/50'
-                                    : 'bg-slate-800/50 text-gray-400 hover:text-white border border-purple-500/30'
-                            }`}
-                        >
-                            <span>📷</span> Mars Rover Photos
-                        </button>
                     </motion.div>
 
                     {/* Gallery Grid */}
@@ -203,7 +186,8 @@ export default function DailyDiscovery({ auth, apod }) {
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.1 * index }}
-                                    className="group relative bg-slate-800/30 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all"
+                                    onClick={() => setSelectedImage(item)}
+                                    className="group relative bg-slate-800/30 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer hover:scale-105"
                                 >
                                     {/* Date Badge */}
                                     <div className="absolute top-4 right-4 z-10">
@@ -215,11 +199,21 @@ export default function DailyDiscovery({ auth, apod }) {
 
                                     {/* Image */}
                                     <div className="aspect-video overflow-hidden bg-black">
-                                        <img
-                                            src={item.url}
-                                            alt={item.title}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                        />
+                                        {item.media_type === 'video' || !item.url ? (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <span className="text-6xl">🎥</span>
+                                            </div>
+                                        ) : (
+                                            <img
+                                                src={item.url}
+                                                alt={item.title}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center"><span class="text-6xl">❌</span></div>';
+                                                }}
+                                            />
+                                        )}
                                     </div>
 
                                     {/* Content */}
@@ -228,7 +222,7 @@ export default function DailyDiscovery({ auth, apod }) {
                                             {item.title}
                                         </h3>
                                         <p className="text-gray-400 text-sm line-clamp-2">
-                                            {item.description || item.explanation}
+                                            {item.explanation}
                                         </p>
                                     </div>
                                 </motion.div>
@@ -236,11 +230,91 @@ export default function DailyDiscovery({ auth, apod }) {
                         </motion.div>
                     ) : (
                         <div className="text-center py-20">
-                            <p className="text-gray-400 text-xl">Loading gallery...</p>
+                            <p className="text-gray-400 text-xl">No images available</p>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Modal */}
+            <AnimatePresence>
+                {selectedImage && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSelectedImage(null)}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+                    >
+                        {/* Close Button - OUTSIDE the card */}
+                        <button
+                            onClick={() => setSelectedImage(null)}
+                            className="fixed top-8 right-8 w-12 h-12 bg-slate-800/90 hover:bg-slate-700 rounded-full flex items-center justify-center text-white text-xl transition-colors z-[110] shadow-lg"
+                        >
+                            ✕
+                        </button>
+
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-slate-900/95 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
+                        >
+                            {/* Image */}
+                            <div className="w-full aspect-video bg-black">
+                                <img
+                                    src={selectedImage.hdurl || selectedImage.url}
+                                    alt={selectedImage.title}
+                                    className="w-full h-full object-contain"
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-400 text-xl">Image unavailable</div>';
+                                    }}
+                                />
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-8">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex-1">
+                                        <h2 className="text-3xl font-bold text-white mb-2">
+                                            {selectedImage.title}
+                                        </h2>
+                                        <div className="flex items-center gap-4 text-gray-400">
+                                            <span className="flex items-center gap-2">
+                                                📷 Apod
+                                            </span>
+                                            <span className="flex items-center gap-2">
+                                                📅 {new Date(selectedImage.date).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {auth.user && (
+                                        <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2">
+                                            📖 Add to Journal
+                                        </button>
+                                    )}
+                                </div>
+
+                                <p className="text-gray-300 leading-relaxed">
+                                    {selectedImage.explanation}
+                                </p>
+
+                                {selectedImage.copyright && (
+                                    <p className="mt-4 text-sm text-gray-500">
+                                        © {selectedImage.copyright}
+                                    </p>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 }

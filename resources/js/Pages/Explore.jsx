@@ -1,11 +1,12 @@
 import { Head, Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Explore({ auth, apods }) {
     const canvasRef = useRef(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [activeFilter, setActiveFilter] = useState('All');
+    const [selectedApod, setSelectedApod] = useState(null); // For modal
 
     // Animated star background
     useEffect(() => {
@@ -74,14 +75,29 @@ export default function Explore({ auth, apods }) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Filter logic
+    // Smart filtering of APOD images
     const filteredApods = apods?.filter(apod => {
-        const matchesSearch = apod.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesFilter = activeFilter === 'All' ||
-                              (activeFilter === 'APOD' && apod.media_type === 'image') ||
-                              (activeFilter === 'Planets' && apod.title.toLowerCase().includes('planet')) ||
-                              (activeFilter === 'Mars' && apod.title.toLowerCase().includes('mars')) ||
-                              (activeFilter === 'Asteroids' && apod.title.toLowerCase().includes('asteroid'));
+        const title = apod.title.toLowerCase();
+        const explanation = apod.explanation.toLowerCase();
+
+        const matchesSearch = title.includes(searchTerm.toLowerCase()) ||
+                             explanation.includes(searchTerm.toLowerCase());
+
+        let matchesFilter = true;
+
+        if (activeFilter === 'Planets') {
+            matchesFilter = title.match(/planet|jupiter|saturn|mars|venus|mercury|neptune|uranus|earth/i) ||
+                          explanation.match(/planet|jupiter|saturn|mars|venus|mercury|neptune|uranus|earth/i);
+        } else if (activeFilter === 'Galaxies') {
+            matchesFilter = title.match(/galaxy|galaxies|nebula|nebulae|star|cluster|milky way|andromeda/i) ||
+                          explanation.match(/galaxy|galaxies|nebula|nebulae|star|cluster/i);
+        } else if (activeFilter === 'Mars') {
+            matchesFilter = title.includes('mars') || explanation.includes('mars');
+        } else if (activeFilter === 'Moon') {
+            matchesFilter = title.match(/moon|lunar|eclipse/i) ||
+                          explanation.match(/moon|lunar|eclipse/i);
+        }
+
         return matchesSearch && matchesFilter;
     }) || [];
 
@@ -191,7 +207,7 @@ export default function Explore({ auth, apods }) {
                         transition={{ delay: 0.3 }}
                         className="flex flex-wrap justify-center gap-3 mb-8"
                     >
-                        {['All', 'Planets', 'APOD', 'Mars', 'Asteroids'].map((filter) => (
+                        {['All', 'Planets', 'Galaxies', 'Mars', 'Moon'].map((filter) => (
                             <button
                                 key={filter}
                                 onClick={() => setActiveFilter(filter)}
@@ -203,9 +219,9 @@ export default function Explore({ auth, apods }) {
                             >
                                 {filter === 'All' && '🌌'}
                                 {filter === 'Planets' && '🪐'}
-                                {filter === 'APOD' && '📷'}
+                                {filter === 'Galaxies' && '✨'}
                                 {filter === 'Mars' && '🔴'}
-                                {filter === 'Asteroids' && '⭐'}
+                                {filter === 'Moon' && '🌙'}
                                 {' '}{filter}
                             </button>
                         ))}
@@ -231,26 +247,37 @@ export default function Explore({ auth, apods }) {
                         >
                             {filteredApods.map((apod, index) => (
                                 <motion.div
-                                    key={apod.date}
+                                    key={apod.date || index}
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: index * 0.1 }}
-                                    className="group relative bg-slate-800/30 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:scale-105"
+                                    onClick={() => setSelectedApod(apod)}
+                                    className="group relative bg-slate-800/30 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:scale-105 cursor-pointer"
                                 >
                                     {/* Badge */}
                                     <div className="absolute top-4 right-4 z-10">
                                         <span className="px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full flex items-center gap-1">
-                                            🌍 Planet
+                                            {activeFilter === 'Planets' && '🪐 Planet'}
+                                            {activeFilter === 'Galaxies' && '✨ Galaxy'}
+                                            {activeFilter === 'Mars' && '🔴 Mars'}
+                                            {activeFilter === 'Moon' && '🌙 Moon'}
+                                            {activeFilter === 'All' && '📷 Apod'}
                                         </span>
                                     </div>
 
                                     {/* Image */}
                                     <div className="aspect-square overflow-hidden bg-black">
-                                        <img
-                                            src={apod.url}
-                                            alt={apod.title}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                        />
+                                        {apod.media_type === 'video' ? (
+                                            <div className="w-full h-full flex items-center justify-center text-center p-8">
+                                                <span className="text-6xl">🎥</span>
+                                            </div>
+                                        ) : (
+                                            <img
+                                                src={apod.url}
+                                                alt={apod.title}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                            />
+                                        )}
                                     </div>
 
                                     {/* Content */}
@@ -272,6 +299,82 @@ export default function Explore({ auth, apods }) {
                     )}
                 </div>
             </div>
+
+            {/* Modal */}
+            <AnimatePresence>
+                {selectedApod && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSelectedApod(null)}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-slate-900/95 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
+                        >
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setSelectedApod(null)}
+                                className="absolute top-4 right-4 w-10 h-10 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-white transition-colors z-10"
+                            >
+                                ✕
+                            </button>
+
+                            {/* Image */}
+                            <div className="w-full aspect-video bg-black">
+                                <img
+                                    src={selectedApod.hdurl || selectedApod.url}
+                                    alt={selectedApod.title}
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-8">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex-1">
+                                        <h2 className="text-3xl font-bold text-white mb-2">
+                                            {selectedApod.title}
+                                        </h2>
+                                        <div className="flex items-center gap-4 text-gray-400">
+                                            <span className="flex items-center gap-2">
+                                                📷 Apod
+                                            </span>
+                                            <span className="flex items-center gap-2">
+                                                📅 {new Date(selectedApod.date).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {auth.user && (
+                                        <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2">
+                                            📖 Add to Journal
+                                        </button>
+                                    )}
+                                </div>
+
+                                <p className="text-gray-300 leading-relaxed">
+                                    {selectedApod.explanation}
+                                </p>
+
+                                {selectedApod.copyright && (
+                                    <p className="mt-4 text-sm text-gray-500">
+                                        © {selectedApod.copyright}
+                                    </p>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 }
