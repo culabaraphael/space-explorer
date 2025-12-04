@@ -45,4 +45,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    /**
+     * Get the space discoveries for the user.
+     */
+    public function spaceDiscoveries()
+    {
+        return $this->hasMany(SpaceDiscovery::class);
+    }
 }
