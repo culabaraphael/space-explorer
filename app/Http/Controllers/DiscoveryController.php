@@ -25,21 +25,26 @@ class DiscoveryController extends Controller
      */
     public function daily()
     {
-        $apod = $this->nasaService->getApodForDate();
+        $nasaService = new NasaApiService();
+        $apod = $nasaService->getApodForDate();
 
         return Inertia::render('DailyDiscovery', [
+            'auth' => [
+                'user' => auth()->user()
+            ],
             'apod' => $apod,
         ]);
     }
 
-    /**
-     * Display gallery of recent discoveries
-     */
     public function explore()
     {
-        $apods = $this->nasaService->getLatestApods(12);
+        $nasaService = new NasaApiService();
+        $apods = $nasaService->getLatestApods(12);
 
         return Inertia::render('Explore', [
+            'auth' => [
+                'user' => auth()->user()
+            ],
             'apods' => $apods,
         ]);
     }

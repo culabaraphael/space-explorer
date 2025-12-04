@@ -13,12 +13,12 @@ class JourneyController extends Controller
      */
     public function index()
     {
-        $discoveries = auth()->user()
-            ->spaceDiscoveries()
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $discoveries = auth()->user()->spaceDiscoveries()->latest()->get();
 
         return Inertia::render('MyJourney', [
+            'auth' => [
+                'user' => auth()->user()
+            ],
             'discoveries' => $discoveries,
         ]);
     }
