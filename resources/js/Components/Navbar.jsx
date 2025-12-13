@@ -7,62 +7,62 @@ export default function Navbar({ auth }) {
     return (
         <nav className="bg-slate-900/80 backdrop-blur-md border-b border-slate-700 fixed w-full top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
-                    {/* Logo */}
+                <div className="flex justify-between items-center h-16 relative">
+                    {/* Logo - Left */}
                     <div className="flex items-center">
                         <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2">
-                            <span className="text-3xl">🚀</span>
-                            Space Explorer
+                            Cosmic Explorer
                         </Link>
                     </div>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-6">
+                    {/* Desktop Navigation - Center */}
+                    <div className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
                         <Link
-                            href="/daily-discovery"
-                            className="text-gray-300 hover:text-white transition-colors"
+                            href="/"
+                            className="text-gray-300 hover:text-white transition-colors flex items-center gap-2"
                         >
-                            Daily Discovery
+                        Home
                         </Link>
                         <Link
                             href="/explore"
-                            className="text-gray-300 hover:text-white transition-colors"
+                            className="text-gray-300 hover:text-white transition-colors flex items-center gap-2"
                         >
-                            Explore
+                        Explore
                         </Link>
+                        <Link
+                            href="/daily-discovery"
+                            className="text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+                        >
+                        Gallery
+                        </Link>
+                        {auth.user && (
+                        <Link
+                                href="/my-journey"
+                                className="text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+                        >
+                        Journal
+                        </Link>
+                        )}
+                    </div>
 
+                    {/* Auth Button - Right */}
+                    <div className="hidden md:flex items-center">
                         {auth.user ? (
-                            <>
-                                <Link
-                                    href="/my-journey"
-                                    className="text-gray-300 hover:text-white transition-colors"
-                                >
-                                    Journal
-                                </Link>
-                                <Link
-                                    href="/logout"
-                                    method="post"
-                                    as="button"
-                                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                                >
-                                    Logout
-                                </Link>
-                            </>
+                            <Link
+                                href="/logout"
+                                method="post"
+                                as="button"
+                                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            >
+                                Logout
+                            </Link>
                         ) : (
-                            <>
-                                <Link
-                                    href="/login"
-                                    className="text-gray-300 hover:text-white transition-colors"
-                                >
-                                    Login
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                                >
-                                    Register
-                                </Link>
-                            </>
+                            <Link
+                                href="/login"
+                                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            >
+                                Login
+                            </Link>
                         )}
                     </div>
 
@@ -89,16 +89,22 @@ export default function Navbar({ auth }) {
                 <div className="md:hidden bg-slate-800 border-t border-slate-700">
                     <div className="px-2 pt-2 pb-3 space-y-1">
                         <Link
-                            href="/daily-discovery"
+                            href="/"
                             className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md"
                         >
-                            Daily Discovery
+                             Home
                         </Link>
                         <Link
                             href="/explore"
                             className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md"
                         >
-                            Explore
+                             Explore
+                        </Link>
+                        <Link
+                            href="/daily-discovery"
+                            className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md"
+                        >
+                             Gallery
                         </Link>
                         {auth.user ? (
                             <>
@@ -106,7 +112,7 @@ export default function Navbar({ auth }) {
                                     href="/my-journey"
                                     className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md"
                                 >
-                                    Journal
+                                     Journal
                                 </Link>
                                 <Link
                                     href="/logout"
@@ -118,20 +124,12 @@ export default function Navbar({ auth }) {
                                 </Link>
                             </>
                         ) : (
-                            <>
-                                <Link
-                                    href="/login"
-                                    className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md"
-                                >
-                                    Login
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md"
-                                >
-                                    Register
-                                </Link>
-                            </>
+                            <Link
+                                href="/login"
+                                className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md"
+                            >
+                                Login
+                            </Link>
                         )}
                     </div>
                 </div>

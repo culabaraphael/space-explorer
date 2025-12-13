@@ -62,7 +62,7 @@ export default function Explore({ auth, apods }) {
         const stars = Array.from({ length: 500 }, () => new Star());
 
         function animate() {
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.2)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             stars.forEach(star => {
@@ -143,33 +143,30 @@ export default function Explore({ auth, apods }) {
             <canvas
                 ref={canvasRef}
                 className="fixed inset-0 -z-10"
-                style={{ background: 'linear-gradient(to bottom, #0f172a, #1e1b4b, #0f172a)' }}
+                style={{ background: '#000000' }}
             />
 
             {/* Navbar */}
             <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-purple-500/20">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     <Link href="/" className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-                            <span className="text-2xl">🚀</span>
-                        </div>
                         <span className="text-xl font-bold text-white">Cosmic Explorer</span>
                     </Link>
 
                     <div className="hidden md:flex items-center gap-8">
                         <Link href="/" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                            <span>🚀</span> Home
+                        Home
                         </Link>
                         <Link href="/explore" className="text-white font-semibold flex items-center gap-2">
-                            <span>🔭</span> Explore
+                        Explore
                         </Link>
                         <Link href="/daily-discovery" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                            <span>📷</span> Gallery
+                        Gallery
                         </Link>
                         {auth.user && (
-                            <Link href="/my-journey" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                                <span>📖</span> Journal
-                            </Link>
+                        <Link href="/my-journey" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
+                        Journal
+                        </Link>
                         )}
                     </div>
 
