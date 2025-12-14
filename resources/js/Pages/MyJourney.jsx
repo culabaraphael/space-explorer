@@ -113,12 +113,11 @@ export default function MyJourney({ auth, discoveries }) {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
                         className="text-center mb-12"
                     >
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            <span className="text-purple-400">My</span>{' '}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                            <span className="text-blue-400">My</span>{' '}
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-600">
                                 Cosmic Journey
                             </span>
                         </h1>
@@ -136,10 +135,10 @@ export default function MyJourney({ auth, discoveries }) {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.5 }}
+                            transition={{ delay: 0.4 }}
                             className="text-center py-20"
                         >
-                            <div className="inline-block p-12 bg-slate-800/50 backdrop-blur-md rounded-xl border border-purple-500/30">
+                            <div className="inline-block p-12 bg-slate-800/50 backdrop-blur-md rounded-xl border border-blue-500/30">
                                 <motion.div
                                     animate={{ y: [0, -10, 0] }}
                                     transition={{ repeat: Infinity, duration: 2 }}
@@ -151,7 +150,7 @@ export default function MyJourney({ auth, discoveries }) {
                                 <p className="text-gray-400 mb-6">Start exploring and save your favorite discoveries!</p>
                                 <a
                                     href="/explore"
-                                    className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all hover:scale-105"
+                                    className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all hover:scale-105"
                                 >
                                     🚀 Start Exploring
                                 </a>
@@ -171,16 +170,16 @@ export default function MyJourney({ auth, discoveries }) {
                                         initial={{ opacity: 0, y: 30 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, x: -100 }}
-                                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                                        transition={{ delay: index * 0.1 }}
                                         whileHover={{ scale: 1.02 }}
-                                        className="bg-slate-800/50 backdrop-blur-md rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-colors"
+                                        className="bg-slate-800/50 backdrop-blur-md rounded-xl overflow-hidden border border-blue-500/20 hover:border-blue-500/50 transition-colors"
                                     >
                                         <div className="md:flex">
                                             {/* Image */}
                                             <div className="md:w-1/3 overflow-hidden">
                                                 <motion.img
                                                     whileHover={{ scale: 1.1 }}
-                                                    transition={{ duration: 0.5 }}
+                                                    transition={{ duration: 0.3 }}
                                                     src={discovery.nasa_image_url}
                                                     alt={discovery.nasa_image_title}
                                                     className="w-full h-64 md:h-full object-cover"
@@ -219,7 +218,7 @@ export default function MyJourney({ auth, discoveries }) {
                                                             animate={{ opacity: 1 }}
                                                         >
                                                             <textarea
-                                                                className="w-full p-3 bg-slate-700 text-white rounded-lg border border-purple-500/30 focus:border-purple-500 focus:outline-none"
+                                                                className="w-full p-3 bg-slate-700 text-white rounded-lg border border-blue-500/30 focus:border-blue-500 focus:outline-none"
                                                                 value={data.user_note}
                                                                 onChange={(e) => setData('user_note', e.target.value)}
                                                                 rows="3"
@@ -230,7 +229,7 @@ export default function MyJourney({ auth, discoveries }) {
                                                                     whileTap={{ scale: 0.95 }}
                                                                     onClick={() => handleUpdate(discovery.id)}
                                                                     disabled={processing}
-                                                                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                                                                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white rounded-lg transition-colors disabled:opacity-50"
                                                                 >
                                                                     {processing ? 'Saving...' : '✓ Save'}
                                                                 </motion.button>
@@ -254,7 +253,7 @@ export default function MyJourney({ auth, discoveries }) {
                                                                     whileHover={{ scale: 1.05 }}
                                                                     whileTap={{ scale: 0.95 }}
                                                                     onClick={() => handleEdit(discovery)}
-                                                                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm flex items-center gap-2"
+                                                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm flex items-center gap-2"
                                                                 >
                                                                     ✏️ Edit Note
                                                                 </motion.button>

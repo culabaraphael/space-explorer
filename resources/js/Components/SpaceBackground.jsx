@@ -20,13 +20,13 @@ export default function SpaceBackground() {
     // Fallback for mobile devices (performance)
     if (isMobile) {
         return (
-            <div className="fixed inset-0 -z-10 bg-gradient-to-b from-slate-900 via-purple-900 to-black" />
+            <div className="fixed inset-0 -z-10 bg-gradient-to-b from-slate-900 via-blue-900 to-black" />
         );
     }
 
     return (
         <div className="fixed inset-0 -z-10">
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-purple-900 to-black" />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-blue-900 to-black" />
             <Canvas camera={{ position: [0, 0, 1] }}>
                 <Stars
                     radius={100}

@@ -52,14 +52,14 @@ export default function Navbar({ auth }) {
                                 href="/logout"
                                 method="post"
                                 as="button"
-                                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                             >
                                 Logout
                             </Link>
                         ) : (
                             <Link
                                 href="/login"
-                                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                             >
                                 Login
                             </Link>

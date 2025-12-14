@@ -88,7 +88,7 @@ export default function Home({ auth }) {
             />
 
             {/* Custom Navbar */}
-            <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-purple-500/20">
+            <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-blue-500/20">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     <div className="flex items-center gap-3">
                         <span className="text-xl font-bold text-white">Cosmic Explorer</span>
@@ -116,14 +116,14 @@ export default function Home({ auth }) {
                             href="/logout"
                             method="post"
                             as="button"
-                            className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                         >
                             Logout
                         </Link>
                     ) : (
                         <Link
                             href="/login"
-                            className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                         >
                             Login
                         </Link>
@@ -144,9 +144,9 @@ export default function Home({ auth }) {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="inline-block mb-8 px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-full"
+                        className="inline-block mb-8 px-4 py-2 bg-blue-500/20 border border-blue-500/50 rounded-full"
                     >
-                        <span className="text-purple-300 text-sm flex items-center gap-2">
+                        <span className="text-cyan-300 text-sm flex items-center gap-2">
                             <span>✨</span> Powered by NASA API
                         </span>
                     </motion.div>
@@ -159,7 +159,7 @@ export default function Home({ auth }) {
                         className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
                     >
                         Begin Your{' '}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-500 to-blue-600">
                             Cosmic Journey
                         </span>
                     </motion.h1>
@@ -184,13 +184,13 @@ export default function Home({ auth }) {
                     >
                         <Link
                             href="/explore"
-                            className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white text-lg font-semibold rounded-lg transition-all hover:scale-105 shadow-lg shadow-purple-500/50 flex items-center justify-center gap-2"
+                            className="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white text-lg font-semibold rounded-lg transition-all hover:scale-105 shadow-lg shadow-blue-500/50 flex items-center justify-center gap-2"
                         >
                             <span>🚀</span> Start Exploring
                         </Link>
                         <Link
                             href="/daily-discovery"
-                            className="px-8 py-4 bg-slate-800/50 hover:bg-slate-700/50 text-white text-lg font-semibold rounded-lg transition-all hover:scale-105 border border-purple-500/30 flex items-center justify-center gap-2"
+                            className="px-8 py-4 bg-slate-800/50 hover:bg-slate-700/50 text-white text-lg font-semibold rounded-lg transition-all hover:scale-105 border border-blue-500/30 flex items-center justify-center gap-2"
                         >
                             View Gallery
                         </Link>
@@ -203,11 +203,11 @@ export default function Home({ auth }) {
                         transition={{ delay: 1.2, repeat: Infinity, duration: 2 }}
                         className="mt-16"
                     >
-                        <div className="w-6 h-10 border-2 border-purple-500/50 rounded-full mx-auto flex items-start justify-center p-2">
+                        <div className="w-6 h-10 border-2 border-blue-500/50 rounded-full mx-auto flex items-start justify-center p-2">
                             <motion.div
                                 animate={{ y: [0, 12, 0] }}
                                 transition={{ repeat: Infinity, duration: 1.5 }}
-                                className="w-1.5 h-1.5 bg-purple-500 rounded-full"
+                                className="w-1.5 h-1.5 bg-blue-500 rounded-full"
                             />
                         </div>
                     </motion.div>

@@ -122,7 +122,7 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
             />
 
             {/* Navbar */}
-            <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-purple-500/20">
+            <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-blue-500/20">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     <Link href="/" className="flex items-center gap-3">
                         <span className="text-xl font-bold text-white">Cosmic Explorer</span>
@@ -150,14 +150,14 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                             href="/logout"
                             method="post"
                             as="button"
-                            className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                         >
                             Logout
                         </Link>
                     ) : (
                         <Link
                             href="/login"
-                            className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                         >
                             Login
                         </Link>
@@ -175,7 +175,7 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                         className="text-center mb-12"
                     >
                         <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
                                 Space Gallery
                             </span>
                         </h1>
@@ -195,8 +195,8 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                             onClick={() => setActiveTab('apod')}
                             className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
                                 activeTab === 'apod'
-                                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-purple-500/50'
-                                    : 'bg-slate-800/50 text-gray-400 hover:text-white border border-purple-500/30'
+                                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-blue-500/50'
+                                    : 'bg-slate-800/50 text-gray-400 hover:text-white border border-blue-500/30'
                             }`}
                         >
                             <span>✨</span> Astronomy Picture of the Day
@@ -218,7 +218,7 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.1 * index }}
                                     onClick={() => setSelectedImage(item)}
-                                    className="group relative bg-slate-800/30 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer hover:scale-105"
+                                    className="group relative bg-slate-800/30 backdrop-blur-sm rounded-xl overflow-hidden border border-blue-500/20 hover:border-blue-500/50 transition-all cursor-pointer hover:scale-105"
                                 >
                                     {/* Date Badge */}
                                     <div className="absolute top-4 right-4 z-10">
@@ -289,7 +289,7 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-slate-900/95 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
+                            className="bg-slate-900/95 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-blue-500/30"
                         >
                             <div className="w-full aspect-video bg-black">
                                 <img
@@ -328,7 +328,7 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                                                 e.stopPropagation();
                                                 handleAddToJournal(selectedImage);
                                             }}
-                                            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                                            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
                                         >
                                             📖 Add to Journal
                                         </button>
@@ -363,7 +363,7 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-slate-900/95 rounded-2xl max-w-md w-full p-8 border border-purple-500/30"
+                            className="bg-slate-900/95 rounded-2xl max-w-md w-full p-8 border border-blue-500/30"
                         >
                             <h3 className="text-2xl font-bold text-white mb-4">Add Personal Note</h3>
                             <p className="text-gray-400 mb-4">Add a personal note about this discovery (optional)</p>
@@ -374,14 +374,14 @@ export default function DailyDiscovery({ auth, apod, gallery }) {
                                     onChange={(e) => setData('user_note', e.target.value)}
                                     placeholder="What do you think about this image?"
                                     rows="4"
-                                    className="w-full px-4 py-3 bg-slate-800 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 mb-4"
+                                    className="w-full px-4 py-3 bg-slate-800 border border-blue-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 mb-4"
                                 />
 
                                 <div className="flex gap-3">
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
+                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
                                     >
                                         {processing ? 'Saving...' : 'Save to Journal'}
                                     </button>

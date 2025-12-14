@@ -147,7 +147,7 @@ export default function Explore({ auth, apods }) {
             />
 
             {/* Navbar */}
-            <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-purple-500/20">
+            <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-blue-500/20">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     <Link href="/" className="flex items-center gap-3">
                         <span className="text-xl font-bold text-white">Cosmic Explorer</span>
@@ -175,14 +175,14 @@ export default function Explore({ auth, apods }) {
                             href="/logout"
                             method="post"
                             as="button"
-                            className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                         >
                             Logout
                         </Link>
                     ) : (
                         <Link
                             href="/login"
-                            className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                         >
                             Login
                         </Link>
@@ -200,8 +200,8 @@ export default function Explore({ auth, apods }) {
                         className="text-center mb-12"
                     >
                         <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                            <span className="text-purple-400">Explore</span>{' '}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                            <span className="text-blue-400">Explore</span>{' '}
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-600">
                                 the Cosmos
                             </span>
                         </h1>
@@ -223,7 +223,7 @@ export default function Explore({ auth, apods }) {
                                 placeholder="Search for space objects..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full px-6 py-4 pl-12 bg-slate-800/50 border border-purple-500/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
+                                className="w-full px-6 py-4 pl-12 bg-slate-800/50 border border-blue-500/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
                             />
                             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xl">
                                 🔍
@@ -244,8 +244,8 @@ export default function Explore({ auth, apods }) {
                                 onClick={() => setActiveFilter(filter)}
                                 className={`px-6 py-2 rounded-lg font-semibold transition-all ${
                                     activeFilter === filter
-                                        ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg shadow-purple-500/50'
-                                        : 'bg-slate-800/50 text-gray-400 hover:text-white border border-purple-500/30'
+                                        ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg shadow-blue-500/50'
+                                        : 'bg-slate-800/50 text-gray-400 hover:text-white border border-blue-500/30'
                                 }`}
                             >
                                 {filter === 'All' && '🌌'}
@@ -283,7 +283,7 @@ export default function Explore({ auth, apods }) {
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: index * 0.1 }}
                                     onClick={() => setSelectedApod(apod)}
-                                    className="group relative bg-slate-800/30 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:scale-105 cursor-pointer"
+                                    className="group relative bg-slate-800/30 backdrop-blur-sm rounded-xl overflow-hidden border border-blue-500/20 hover:border-blue-500/50 transition-all hover:scale-105 cursor-pointer"
                                 >
                                     {/* Badge */}
                                     <div className="absolute top-4 right-4 z-10">
@@ -353,7 +353,7 @@ export default function Explore({ auth, apods }) {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-slate-900/95 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
+                            className="bg-slate-900/95 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-blue-500/30"
                         >
                             <div className="w-full aspect-video bg-black">
                                 <img
@@ -388,7 +388,7 @@ export default function Explore({ auth, apods }) {
                                                 e.stopPropagation();
                                                 handleAddToJournal(selectedApod);
                                             }}
-                                            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                                            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
                                         >
                                             📖 Add to Journal
                                         </button>
@@ -423,7 +423,7 @@ export default function Explore({ auth, apods }) {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-slate-900/95 rounded-2xl max-w-md w-full p-8 border border-purple-500/30"
+                            className="bg-slate-900/95 rounded-2xl max-w-md w-full p-8 border border-blue-500/30"
                         >
                             <h3 className="text-2xl font-bold text-white mb-4">Add Personal Note</h3>
                             <p className="text-gray-400 mb-4">Add a personal note about this discovery (optional)</p>
@@ -434,14 +434,14 @@ export default function Explore({ auth, apods }) {
                                     onChange={(e) => setData('user_note', e.target.value)}
                                     placeholder="What do you think about this image?"
                                     rows="4"
-                                    className="w-full px-4 py-3 bg-slate-800 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 mb-4"
+                                    className="w-full px-4 py-3 bg-slate-800 border border-blue-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 mb-4"
                                 />
 
                                 <div className="flex gap-3">
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
+                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
                                     >
                                         {processing ? 'Saving...' : 'Save to Journal'}
                                     </button>
