@@ -2,7 +2,6 @@
 
 A beautiful web application for exploring NASA's Astronomy Picture of the Day (APOD) collection. Built with Laravel, React, and Inertia.js.
 
-![Space Explorer](https://via.placeholder.com/800x400?text=Space+Explorer+Screenshot)
 
 ## Features ✨
 
