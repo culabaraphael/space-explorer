@@ -20,10 +20,6 @@ Route::get('/daily-discovery', [DiscoveryController::class, 'daily'])
 Route::get('/explore', [DiscoveryController::class, 'explore'])
     ->name('explore');
 
-Route::get('/planets', function () {
-    return inertia('Planets');
-})->name('planets');
-
 /*
 |--------------------------------------------------------------------------
 | Protected Routes - Authentication Required

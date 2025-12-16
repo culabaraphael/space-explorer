@@ -67,7 +67,7 @@ export default function Home({ auth }) {
                             href="/explore"
                             className="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white text-lg font-semibold rounded-lg transition-all hover:scale-105 shadow-lg shadow-blue-500/50 flex items-center justify-center gap-2"
                         >
-                            <span>🚀</span> Start Exploring
+                        Start Exploring
                         </Link>
                         <Link
                             href="/daily-discovery"
