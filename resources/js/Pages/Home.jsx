@@ -1,135 +1,16 @@
 import { Head, Link } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
+import StarBackground from '@/Components/StarBackground';
 import { motion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
 
 export default function Home({ auth }) {
-    const canvasRef = useRef(null);
-
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // Star class
-        class Star {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.z = Math.random() * canvas.width;
-                this.speed = 2;
-            }
-
-            update() {
-                this.z -= this.speed;
-                if (this.z <= 0) {
-                    this.z = canvas.width;
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                }
-            }
-
-            draw() {
-                const sx = (this.x - canvas.width / 2) * (canvas.width / this.z);
-                const sy = (this.y - canvas.height / 2) * (canvas.width / this.z);
-                const x = sx + canvas.width / 2;
-                const y = sy + canvas.height / 2;
-
-                const size = (1 - this.z / canvas.width) * 2;
-                const opacity = 1 - this.z / canvas.width;
-
-                ctx.beginPath();
-                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        // Create stars
-        const stars = Array.from({ length: 800 }, () => new Star());
-
-        // Animation loop
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            stars.forEach(star => {
-                star.update();
-                star.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        // Handle resize
-        const handleResize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     return (
         <>
             <Head title="Home" />
 
-            {/* Animated Star Background */}
-            <canvas
-                ref={canvasRef}
-                className="fixed inset-0 -z-10"
-                style={{ background: '#000000' }}
-            />
-
-            {/* Custom Navbar */}
-            <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-blue-500/20">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <span className="text-xl font-bold text-white">Cosmic Explorer</span>
-                    </div>
-
-                    <div className="hidden md:flex items-center gap-8">
-                        <Link href="/" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                        Home
-                        </Link>
-                        <Link href="/explore" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                        Explore
-                        </Link>
-                        <Link href="/daily-discovery" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                        Gallery
-                        </Link>
-                        {auth.user ? (
-                        <Link href="/my-journey" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                        Journal
-                        </Link>
-                        ) : null}
-                    </div>
-
-                    {auth.user ? (
-                        <Link
-                            href="/logout"
-                            method="post"
-                            as="button"
-                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                        >
-                            Logout
-                        </Link>
-                    ) : (
-                        <Link
-                            href="/login"
-                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                        >
-                            Login
-                        </Link>
-                    )}
-                </div>
-            </nav>
+            <StarBackground />
+            <Navbar auth={auth} />
 
             {/* Main Content */}
             <div className="min-h-screen flex flex-col items-center justify-center px-4 pt-20">
@@ -194,22 +75,6 @@ export default function Home({ auth }) {
                         >
                             View Gallery
                         </Link>
-                    </motion.div>
-
-                    {/* Scroll Indicator */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 1.2, repeat: Infinity, duration: 2 }}
-                        className="mt-16"
-                    >
-                        <div className="w-6 h-10 border-2 border-blue-500/50 rounded-full mx-auto flex items-start justify-center p-2">
-                            <motion.div
-                                animate={{ y: [0, 12, 0] }}
-                                transition={{ repeat: Infinity, duration: 1.5 }}
-                                className="w-1.5 h-1.5 bg-blue-500 rounded-full"
-                            />
-                        </div>
                     </motion.div>
                 </motion.div>
             </div>

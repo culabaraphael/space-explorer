@@ -20,11 +20,11 @@ NProgress.configure({
 const style = document.createElement('style');
 style.innerHTML = `
     #nprogress .bar {
-        background: linear-gradient(to right, #a855f7, #ec4899) !important;
+        background: linear-gradient(to right, #3B82F6, #06B6D4) !important;
         height: 3px !important;
     }
     #nprogress .peg {
-        box-shadow: 0 0 10px #a855f7, 0 0 5px #a855f7 !important;
+        box-shadow: 0 0 10px #3B82F6, 0 0 5px #06B6D4 !important;
     }
 `;
 document.head.appendChild(style);
@@ -46,5 +46,10 @@ createInertiaApp({
 
         root.render(<App {...props} />);
     },
-    progress: false, // No progress bar
+    progress: {
+        delay: 250,
+        color: '#3B82F6',
+        includeCSS: true,
+        showSpinner: false,
+    },
 });

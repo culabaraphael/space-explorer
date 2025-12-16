@@ -1,13 +1,16 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import StarBackground from '@/Components/StarBackground';
+import Navbar from '@/Components/Navbar';
 
 export default function Explore({ auth, apods }) {
-    const canvasRef = useRef(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [activeFilter, setActiveFilter] = useState('All');
     const [selectedApod, setSelectedApod] = useState(null);
     const [showNoteModal, setShowNoteModal] = useState(false);
+    const [itemsToShow, setItemsToShow] = useState(9);
+    const [imageLoadingStates, setImageLoadingStates] = useState({});
 
     const { data, setData, post, processing, reset } = useForm({
         nasa_image_url: '',
@@ -16,73 +19,6 @@ export default function Explore({ auth, apods }) {
         nasa_date: '',
         user_note: '',
     });
-
-    // Animated star background
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        class Star {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.z = Math.random() * canvas.width;
-                this.speed = 2;
-            }
-
-            update() {
-                this.z -= this.speed;
-                if (this.z <= 0) {
-                    this.z = canvas.width;
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                }
-            }
-
-            draw() {
-                const sx = (this.x - canvas.width / 2) * (canvas.width / this.z);
-                const sy = (this.y - canvas.height / 2) * (canvas.width / this.z);
-                const x = sx + canvas.width / 2;
-                const y = sy + canvas.height / 2;
-
-                const size = (1 - this.z / canvas.width) * 2;
-                const opacity = 1 - this.z / canvas.width;
-
-                ctx.beginPath();
-                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        const stars = Array.from({ length: 500 }, () => new Star());
-
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            stars.forEach(star => {
-                star.update();
-                star.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        const handleResize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     // Smart filtering of APOD images
     const filteredApods = apods?.filter(apod => {
@@ -139,56 +75,8 @@ export default function Explore({ auth, apods }) {
         <>
             <Head title="Explore the Cosmos" />
 
-            {/* Animated Star Background */}
-            <canvas
-                ref={canvasRef}
-                className="fixed inset-0 -z-10"
-                style={{ background: '#000000' }}
-            />
-
-            {/* Navbar */}
-            <nav className="fixed top-0 w-full z-50 bg-slate-900/50 backdrop-blur-md border-b border-blue-500/20">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <Link href="/" className="flex items-center gap-3">
-                        <span className="text-xl font-bold text-white">Cosmic Explorer</span>
-                    </Link>
-
-                    <div className="hidden md:flex items-center gap-8">
-                        <Link href="/" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                        Home
-                        </Link>
-                        <Link href="/explore" className="text-white font-semibold flex items-center gap-2">
-                        Explore
-                        </Link>
-                        <Link href="/daily-discovery" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                        Gallery
-                        </Link>
-                        {auth.user && (
-                        <Link href="/my-journey" className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                        Journal
-                        </Link>
-                        )}
-                    </div>
-
-                    {auth.user ? (
-                        <Link
-                            href="/logout"
-                            method="post"
-                            as="button"
-                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                        >
-                            Logout
-                        </Link>
-                    ) : (
-                        <Link
-                            href="/login"
-                            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                        >
-                            Login
-                        </Link>
-                    )}
-                </div>
-            </nav>
+            <StarBackground />
+            <Navbar auth={auth} />
 
             {/* Main Content */}
             <div className="min-h-screen pt-24 pb-12 px-4">
@@ -266,17 +154,19 @@ export default function Explore({ auth, apods }) {
                         className="text-center text-gray-400 mb-8"
                     >
                         Found {filteredApods.length} objects
+                        {filteredApods.length > itemsToShow && ` (showing ${itemsToShow})`}
                     </motion.p>
 
                     {/* Grid */}
                     {filteredApods.length > 0 ? (
+                        <>
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
                             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                         >
-                            {filteredApods.map((apod, index) => (
+                            {filteredApods.slice(0, itemsToShow).map((apod, index) => (
                                 <motion.div
                                     key={apod.date || index}
                                     initial={{ opacity: 0, scale: 0.9 }}
@@ -297,17 +187,25 @@ export default function Explore({ auth, apods }) {
                                     </div>
 
                                     {/* Image */}
-                                    <div className="aspect-square overflow-hidden bg-black">
+                                    <div className="aspect-square overflow-hidden bg-black relative">
                                         {apod.media_type === 'video' ? (
                                             <div className="w-full h-full flex items-center justify-center text-center p-8">
                                                 <span className="text-6xl">🎥</span>
                                             </div>
                                         ) : (
-                                            <img
-                                                src={apod.url}
-                                                alt={apod.title}
-                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                            />
+                                            <>
+                                                {/* Loading Skeleton */}
+                                                {!imageLoadingStates[apod.date] && (
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 animate-pulse" />
+                                                )}
+                                                <img
+                                                    src={apod.url}
+                                                    alt={apod.title}
+                                                    loading="lazy"
+                                                    onLoad={() => setImageLoadingStates(prev => ({ ...prev, [apod.date]: true }))}
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                />
+                                            </>
                                         )}
                                     </div>
 
@@ -323,6 +221,23 @@ export default function Explore({ auth, apods }) {
                                 </motion.div>
                             ))}
                         </motion.div>
+
+                        {/* Load More Button */}
+                        {filteredApods.length > itemsToShow && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="flex justify-center mt-12"
+                            >
+                                <button
+                                    onClick={() => setItemsToShow(prev => prev + 9)}
+                                    className="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-semibold rounded-lg transition-all hover:scale-105 shadow-lg shadow-blue-500/50 flex items-center gap-2"
+                                >
+                                    <span>🔭</span> Load More ({filteredApods.length - itemsToShow} remaining)
+                                </button>
+                            </motion.div>
+                        )}
+                        </>
                     ) : (
                         <div className="text-center py-20">
                             <p className="text-gray-400 text-xl">No objects found matching your search</p>
@@ -359,6 +274,7 @@ export default function Explore({ auth, apods }) {
                                 <img
                                     src={selectedApod.hdurl || selectedApod.url}
                                     alt={selectedApod.title}
+                                    loading="lazy"
                                     className="w-full h-full object-contain"
                                 />
                             </div>
