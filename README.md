@@ -1,3 +1,4 @@
+<img width="1919" height="912" alt="image" src="https://github.com/user-attachments/assets/10085305-6477-40b9-b407-429bc6de3e10" />
 # Space Explorer 🚀
 
 A beautiful web application for exploring NASA's Astronomy Picture of the Day (APOD) collection. Built with Laravel, React, and Inertia.js.
