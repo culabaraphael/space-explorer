@@ -34,7 +34,7 @@ export default function StarBackground() {
                 const x = sx + canvas.width / 2;
                 const y = sy + canvas.height / 2;
 
-                const size = (1 - this.z / canvas.width) * 2;
+                const size = (1 - this.z / canvas.width) * 4;
                 const opacity = 1 - this.z / canvas.width;
 
                 ctx.beginPath();
@@ -45,7 +45,7 @@ export default function StarBackground() {
         }
 
         // Create stars
-        const stars = Array.from({ length: 300 }, () => new Star());
+        const stars = Array.from({ length: 800 }, () => new Star());
         let animationFrameId;
 
         function animate() {
