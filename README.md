@@ -215,7 +215,7 @@ space-explorer/
 ├── app/
 │   ├── Http/
 │   │   └── Controllers/
-│   │       ├── ExploreController.php    # NASA API & Explore page
+│   │       ├── DiscoveryController.php    # NASA API & Explore page
 │   │       └── JourneyController.php    # CRUD operations
 │   └── Models/
 │       ├── User.php                     # User model
